@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zemoso</title>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous"></script>
+
+    <script>
+         function openTab(tabId){
+            $(".tab_content").css("display","none");
+            $("#"+tabId).css("display","block");
+         }
+
+         var jsonObject;
+         $.getJSON("images.json" , function(json){
+                    jsonObject = localStorage.getItem("imgJson");
+                    if(jsonObject==null)
+                    jsonObject=json;
+                    displayPhotos();
+         });
+         function displayGalleryPhotos(){
+                    var out="";
+                    for(var i=0;i<jsonObject.length;i++){
+                        out += '<div class="img_box">';
+                        out += '<div class="img_name">'+jsonObject[i].name+'</div>';
+                        out += '<div class="img_time">'+jsonObject[i].uploadTime+'</div>';
+                        out += '<img src="'+jsonObject[i].url+'"/>';
+                        out += '<p class="img_info">'+jsonObject[i].info+'</p>';
+                        out += '</div>';
+                    }
+                    console.log(out);
+                    document.getElementById("photosG").innerHTML = out;
+         }
+    </script>
+<style>
+
+    body{
+        padding:0;
+        margin:0;
+    }
+
+    .head{
+        height:50px;
+        width:100%;
+        display:block;
+        background-color:#007799;
+    }
+    a{
+        text-decoration:none;
+        float:left;
+        text-align:center;
+        padding:12px;
+        font-size:24px;
+        font-weight:500;
+        color:#fff;
+    }
+    a:hover{
+        background-color:#ddd;
+        color:#007799;
+    }
+    .tab{
+        display:block;
+        width:100%;
+    }
+    .tab_content{
+        width:80%;
+        margin:auto;
+        display:none;
+    }
+    h1{
+        text-align:center;
+    }
+    .text_content{
+        font-size:22px;
+        line-height:28px;
+    }
+    .tab{
+        display:block;
+        width:100%;
+    }
+    .tab_content{
+        width:90%;
+        margin:auto;
+        display:none;
+
+    }
+    .img_box{
+        margin:10px;
+        display:inline-block;
+        background-color:#fff;
+        border-radius:2px;
+        padding:8px;
+        box-shadow:0 0 10px 0;
+    }
+    .img_name{
+        display:block;
+        height:24px;
+        font-size:18px;
+        font-weight:600;
+        padding:3px;
+        font-family: "Times New Roman", Times, serif;
+    }
+    .img_time{
+        display:block;
+        height:16px;
+        font-size:10px;
+        color:#a1a1a1;
+        padding:2px;
+        font-family: "Times New Roman", Times, serif;
+    }
+    #gallery img {
+        display:block;
+        height:220px;
+        margin:auto;
+    }
+    .img_info{
+        display:block;
+        font-size:14px;
+        color:555555;
+        padding:4px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+</style>
+
+</head>
+<body>
+
+<header>
+    <div class="head">
+
+        <a href="#" onclick="openTab('home')">Home</a>
+        <a href="#" onclick="openTab('about')">About Me</a>
+        <a href="#" onclick="openTab('contact')">Contact</a>
+        <a href="#" onclick="openTab('gallery')">Gallery</a>
+        <a href="galleryAdmin.html" >Gallery Admin</a>
+
+    </div>
+</header>
+
+<main>
+    <div class="tab">
+        <div class="tab_content" id="home">
+            <h1>My Home</h1>
+            <p class="text_content">A home page is generally the main page a visitor navigating to a website from a web
+                search engine will see, and it may also serve as a landing page to attract visitors.
+                [1][2] The home page is used to facilitate navigation to other pages on the site by
+                providing links to prioritized and recent articles and pages, and possibly a search box.[3]
+                For example, a news website may present headlines and first paragraphs of top stories, with
+                links to full articles, in a dynamic web page that reflects the popularity and recentness of
+                stories.[4] Meanwhile, other websites use the homepage to attract users to create an account.
+                Once they are logged in, the homepage may be redirected to their profile page. This may in turn
+                be referred to as the "personal home page"</p>
+        </div>
+        <div class="tab_content" id="about">
+            <h1>About me</h1>
+        </div>
+        <div class="tab_content" id="contact">
+            <h1>Contact</h1>
+            <div class="contactForm">
+                <form>
+                    <textarea placeholder="Your text"></textarea>
+                </form>
+            </div>
+        </div>
+        <div class="tab_content" id="gallery">
+            <h1>Gallery</h1>
+            <div id="photosG">
+
+            </div>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>
