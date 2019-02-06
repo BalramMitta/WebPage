@@ -10,359 +10,381 @@
 
     <script>
 
-         function openTab(tabId){
-            $(".tab_content").css("display","none");
-            $("#"+tabId).css("display","block");
-         }
+        function openTab(tabId) {
+            $(".tab_content").css("display", "none");
+            $("#" + tabId).css("display", "block");
+        }
 
-         var jsonObject;
-         $.getJSON("images.json" , function(json){
-                    jsonObject=json;
-                    displayPhotos();
-                    displayGalleryPhotos();
-         });
-         function displayGalleryPhotos(){
-                    var out="";
-                    for(var i in jsonObject){
-                        out += '<div class="img_box">';
-                        out += '<div class="img_name">'+jsonObject[i].name+'</div>';
-                        out += '<div class="img_time">'+jsonObject[i].uploadTime+'</div>';
-                        out += '<img src="'+jsonObject[i].url+'"/>';
-                        out += '<p class="img_info">'+jsonObject[i].info+'</p>';
-                        out += '</div>';
-                    }
-                    console.log(jsonObject);
-                    document.getElementById("photosG").innerHTML = out;
-         }
+        var jsonObject;
+        $.getJSON("images.json", function (json) {
+            jsonObject = json;
+            displayPhotos();
+            displayGalleryPhotos();
+        });
 
-         // To display images from json object
-         function displayPhotos(){
-                    var out="";
-                    for(var i in jsonObject){
-                        out += '<div class="img_box">';
-                        out += '<div class="img_name">'+jsonObject[i].name+'</div>';
-                        out += '<div class="img_time">'+jsonObject[i].uploadTime+'</div>';
-                        out += '<img src="'+jsonObject[i].url+'" alt="Unable to display image"/>';
-                        out += '<p class="img_info">'+jsonObject[i].info+'</p>';
-                        out += '<div class="img_actions" >';
-                        out += '<button id="delete_img" onclick=deleteImage("'+jsonObject[i].id+'")>Delete</button>';
-                        out += '<button id="edit_img" onclick=displayImageEditForm("'+jsonObject[i].id+'")>Edit</button>';
-                        out += '</div>';
-                        out += '</div>';
-                    }
-                    displayGalleryPhotos()
-                    document.getElementById("photos").innerHTML = out;
-         }
+        function displayGalleryPhotos() {
+            var out = "";
+            for (var i in jsonObject) {
+                out += '<div class="img_box">';
+                out += '<div class="img_name">' + jsonObject[i].name + '</div>';
+                out += '<div class="img_time">' + jsonObject[i].uploadTime + '</div>';
+                out += '<img src="' + jsonObject[i].url + '"/>';
+                out += '<p class="img_info">' + jsonObject[i].info + '</p>';
+                out += '</div>';
+            }
+            console.log(jsonObject);
+            document.getElementById("photosG").innerHTML = out;
+        }
+
+        // To display images from json object
+        function displayPhotos() {
+            var out = "";
+            for (var i in jsonObject) {
+                out += '<div class="img_box">';
+                out += '<div class="img_name">' + jsonObject[i].name + '</div>';
+                out += '<div class="img_time">' + jsonObject[i].uploadTime + '</div>';
+                out += '<img src="' + jsonObject[i].url + '" alt="Unable to display image"/>';
+                out += '<p class="img_info">' + jsonObject[i].info + '</p>';
+                out += '<div class="img_actions" >';
+                out += '<button id="delete_img" onclick=deleteImage("' + jsonObject[i].id + '")>Delete</button>';
+                out += '<button id="edit_img" onclick=displayImageEditForm("' + jsonObject[i].id + '")>Edit</button>';
+                out += '</div>';
+                out += '</div>';
+            }
+            displayGalleryPhotos()
+            document.getElementById("photos").innerHTML = out;
+        }
 
 
-         function doesFileExist(urlToFile) {
-                 var xhr = new XMLHttpRequest();
-                 xhr.open('HEAD', urlToFile, false);
-                 xhr.send();
+        function doesFileExist(urlToFile) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', urlToFile, false);
+            xhr.send();
 
-                 if (xhr.status == "404") {
-                     return false;
-                 } else {
-                     return true;
-                 }
-         }
-         // Adding an image to json object
-         function addImage(){
-                var name = document.imgForm.name.value;
-                var url = document.imgForm.url.value;
-                var info = document.imgForm.info.value;
-                jsonObject.push({
-                     "id":jsonObject.length,
-                     "name":name,
-                     "url":url,
-                     "info":info,
-                     "uploadTime":new Date()
-                });
-                document.getElementById("form").innerHTML="";
-                displayPhotos();
-         }
+            if (xhr.status == "404") {
+                return false;
+            } else {
+                return true;
+            }
+        }
 
-         // Deleting an image from json object
-         function deleteImage(id){
-                    for(var i in jsonObject){
-                        if(jsonObject[i].id == id ){
-                            delete jsonObject[i];
-                            break;
-                        }
-                    }
-                    displayPhotos();
-         }
+        // Adding an image to json object
+        function addImage() {
+            var name = document.imgForm.name.value;
+            var url = document.imgForm.url.value;
+            var info = document.imgForm.info.value;
+            jsonObject.push({
+                "id": jsonObject.length,
+                "name": name,
+                "url": url,
+                "info": info,
+                "uploadTime": new Date()
+            });
+            document.getElementById("form").innerHTML = "";
+            displayPhotos();
+        }
 
-         // Editing the image details of particular id
-         function editImage(id){
-                    var name = document.imgForm.name.value;
-                    var url = document.imgForm.url.value;
-                    var info = document.imgForm.info.value;
-                    for(var i in jsonObject){
-                        if(jsonObject[i].id == id ){
-                            jsonObject[i].name=name;
-                            jsonObject[i].url=url;
-                            jsonObject[i].info=info;
-                            jsonObject[i].uploadTime = new Date();
-                            break;
-                        }
-                    }
-                    document.getElementById("form").innerHTML="";
-                    displayPhotos();
-         }
-
-         function checkImageFormValidation(){
-                if(!doesFileExist(document.imgForm.url.value)){
-                    alert("Invalid image path");
-                    document.imgForm.url.focus();
-                    return false;
-                } else if(document.imgForm.name.value==""){
-                    alert("Name cannot be empty");
-                    document.imgForm.name.focus();
-                    return false;
-                } else if(document.imgForm.info.value==""){
-                    alert("Info cannot be empty");
-                    document.imgForm.info.focus();
-                    return false;
-                } else{
-                    return true;
+        // Deleting an image from json object
+        function deleteImage(id) {
+            for (var i in jsonObject) {
+                if (jsonObject[i].id == id) {
+                    delete jsonObject[i];
+                    break;
                 }
-         }
+            }
+            displayPhotos();
+        }
 
-         //Display image edit form
-         function displayImageEditForm(id){
-                    for(var i in jsonObject){
-                        if(jsonObject[i].id == id ){
-                            var imageForm="";
-                            imageForm += '<div class="edit_box" >';
-                            imageForm += '<form name="imgForm" action=\"javascript:editImage(\''+id+'\')\" onsubmit="return checkImageFormValidation()">';
-                            imageForm += '<input type="text" placeholder="Image Url" name="url" value="'+jsonObject[i].url+'"/>';
-                            imageForm += '<input type="text" placeholder="Name" name="name" value="'+jsonObject[i].name+'"/>';
-                            imageForm += '<input type="text" placeholder="Image Info" name="info" value="'+jsonObject[i].info+'"/>';
-                            imageForm += '<input type="submit" value="Submit"/>';
-                            imageForm += '</form>';
-                            imageForm += '</div>';
-                        }
-                    }
+        // Editing the image details of particular id
+        function editImage(id) {
+            var name = document.imgForm.name.value;
+            var url = document.imgForm.url.value;
+            var info = document.imgForm.info.value;
+            for (var i in jsonObject) {
+                if (jsonObject[i].id == id) {
+                    jsonObject[i].name = name;
+                    jsonObject[i].url = url;
+                    jsonObject[i].info = info;
+                    jsonObject[i].uploadTime = new Date();
+                    break;
+                }
+            }
+            document.getElementById("form").innerHTML = "";
+            displayPhotos();
+        }
 
-                    document.getElementById("form").innerHTML=imageForm;
-         }
+        function checkImageFormValidation() {
+            if (!doesFileExist(document.imgForm.url.value)) {
+                alert("Invalid image path");
+                document.imgForm.url.focus();
+                return false;
+            } else if (document.imgForm.name.value == "") {
+                alert("Name cannot be empty");
+                document.imgForm.name.focus();
+                return false;
+            } else if (document.imgForm.info.value == "") {
+                alert("Info cannot be empty");
+                document.imgForm.info.focus();
+                return false;
+            } else {
+                return true;
+            }
+        }
 
-         //Display new image add form
-         function displayImageAddForm(){
-                            var imageForm="";
-                            imageForm += '<div class="edit_box" >';
-                            imageForm += '<form name="imgForm" action="javascript:addImage()" onsubmit="return checkImageFormValidation()">';
-                            imageForm += '<input type="text" placeholder="Image Url" name="url"/>';
-                            imageForm += '<input type="text" placeholder="Name" name="name"/>';
-                            imageForm += '<input type="text" placeholder="Image Info" name="info"/>';
-                            imageForm += '<input type="submit" value="Add"/>';
-                            imageForm += '</form>';
-                            imageForm += '</div>';
+        //Display image edit form
+        function displayImageEditForm(id) {
+            for (var i in jsonObject) {
+                if (jsonObject[i].id == id) {
+                    var imageForm = "";
+                    imageForm += '<div class="edit_box" >';
+                    imageForm += '<form name="imgForm" action=\"javascript:editImage(\'' + id + '\')\" onsubmit="return checkImageFormValidation()">';
+                    imageForm += '<input type="text" placeholder="Image Url" name="url" value="' + jsonObject[i].url + '"/>';
+                    imageForm += '<input type="text" placeholder="Name" name="name" value="' + jsonObject[i].name + '"/>';
+                    imageForm += '<input type="text" placeholder="Image Info" name="info" value="' + jsonObject[i].info + '"/>';
+                    imageForm += '<input type="submit" value="Submit"/>';
+                    imageForm += '</form>';
+                    imageForm += '</div>';
+                }
+            }
 
-                            document.getElementById("form").innerHTML=imageForm;
+            document.getElementById("form").innerHTML = imageForm;
+        }
 
-         }
+        //Display new image add form
+        function displayImageAddForm() {
+            var imageForm = "";
+            imageForm += '<div class="edit_box" >';
+            imageForm += '<form name="imgForm" action="javascript:addImage()" onsubmit="return checkImageFormValidation()">';
+            imageForm += '<input type="text" placeholder="Image Url" name="url"/>';
+            imageForm += '<input type="text" placeholder="Name" name="name"/>';
+            imageForm += '<input type="text" placeholder="Image Info" name="info"/>';
+            imageForm += '<input type="submit" value="Add"/>';
+            imageForm += '</form>';
+            imageForm += '</div>';
 
-         function checkContactForm(form){
-                   var regexForEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            document.getElementById("form").innerHTML = imageForm;
 
-                   if(form.name.value==''){
-                        alert("Name cannot be empty");
-                        return false;
-                   }
-                   if(form.email.value==''){
-                        alert("Email cannot be empty");
-                        return false;
-                   }
-                   if(!regexForEmail.test(form.email.value)){
-                        alert("Invalid Email format. Ex : email@example.com");
-                        return false;
-                   }
-                   if(form.message.value==''){
-                        alert("Message cannot be empty");
-                        return false;
-                   }
-                   return true;
-         }
+        }
+
+        function checkContactForm(form) {
+            var regexForEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+            if (form.name.value == '') {
+                alert("Name cannot be empty");
+                return false;
+            }
+            if (form.email.value == '') {
+                alert("Email cannot be empty");
+                return false;
+            }
+            if (!regexForEmail.test(form.email.value)) {
+                alert("Invalid Email format. Ex : email@example.com");
+                return false;
+            }
+            if (form.message.value == '') {
+                alert("Message cannot be empty");
+                return false;
+            }
+            return true;
+        }
     </script>
     <style>
 
-    body{
-        padding:0;
-        margin:0;
-    }
-    .head{
-        height:50px;
-        width:100%;
-        display:block;
-        background-color:#007799;
-    }
-    a{
-        text-decoration:none;
-        float:left;
-        text-align:center;
-        padding:12px;
-        font-size:24px;
-        font-weight:500;
-        color:#fff;
-    }
-    a:hover{
-        background-color:#ddd;
-        color:#007799;
-    }
-    h1{
-        text-align:center;
-    }
-    .text_content{
-        font-size:22px;
-        line-height:28px;
-    }
-    .tab{
-        display:block;
-        width:100%;
-    }
-    .tab_content{
-        width:90%;
-        margin:auto;
-        display:none;
-    }
-    .img_box{
-        margin:10px;
-        display:inline-block;
-        background-color:#fff;
-        border-radius:2px;
-        padding:8px;
-        box-shadow:0 0 10px 0;
-    }
-    .img_name{
-        display:block;
-        height:24px;
-        font-size:18px;
-        font-weight:600;
-        padding:3px;
-        font-family: "Times New Roman", Times, serif;
-    }
-    .img_time{
-        display:block;
-        height:16px;
-        font-size:10px;
-        color:#a1a1a1;
-        padding:2px;
-        font-family: "Times New Roman", Times, serif;
-    }
-    #gallery img,#galleryAdmin img {
-        display:block;
-        height:220px;
-        margin:auto;
-    }
-    .img_info{
-        display:block;
-        font-size:14px;
-        color:555555;
-        padding:4px;
-        font-family: "Times New Roman", Times, serif;
-    }
-    .img_actions{
-        display:block;
-        padding:5px;
-    }
-    #photos button{
-        width:40%;
-        height:24px;
-        background-color:#243444;
-        font-size:14px;
-        margin:auto;
-        display:inline;
-        margin-left:5%;
-        margin-right:5%;
-        color:#fff;
-        border-style:none;
-        border:none;
-        cursor:pointer;
-        box-shadow:0 0 10px 0;
-    }
-    .edit_box{
-        position:fixed;
-        top:150px;
-        display:block;
-        margin-left:calc(50% - 200px);
-        background-color:#fff;
-        box-shadow:0 0 20px 2px;
-    }
-    .edit_box input{
-        border-style:none;
-        border:none;
-        width:350px;
-        height:32px;
-        margin:30px;
-        display:block;
-        border-bottom:0.5px solid #000;
-    }
-    .edit_box input:focus{
-        outline:none;
-        border-bottom:1.5px solid #000;
+        body {
+            padding: 0;
+            margin: 0;
+        }
 
-    }
-    .edit_box input[type=submit]{
-        border-bottom:0;
-        background-color:#000;
-        color:#fff;
-    }
-    #add_img{
-        border-style:none;
-        border:none;
-        background-color:rgba(0,0,0,0);
-        color:#515151;
-        font-size:18px;
-        font-weight:500;
-        position:absolute;
-        right:20px;
-        top:70px;
-        cursor:pointer;
-        padding:10px;
-    }
-    #add_img:hover{
-        background-color:#f1f1f1;
-    }
-    #add_img:focus{
-        outline:none;
-    }
-    #home{
-        display:block;
-    }
+        .head {
+            height: 50px;
+            width: 100%;
+            display: block;
+            background-color: #007799;
+        }
 
-    .contactForm{
-          border-radius: 5px;
-          background-color: #f2f2f2;
-          padding: 20px;
-          width:60%;
-          margin:auto;
-    }
-    .contactForm input[type=text], .contactForm input[type=email], .contactForm textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      margin-top: 6px;
-      margin-bottom: 16px;
-      resize: vertical;
-    }
+        a {
+            text-decoration: none;
+            float: left;
+            text-align: center;
+            padding: 12px;
+            font-size: 24px;
+            font-weight: 500;
+            color: #fff;
+        }
 
-    .contactForm input[type=submit] {
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+        a:hover {
+            background-color: #ddd;
+            color: #007799;
+        }
 
-    .contactForm input[type=submit]:hover {
-      background-color: #45a049;
-    }
-</style>
+        h1 {
+            text-align: center;
+        }
+
+        .text_content {
+            font-size: 22px;
+            line-height: 28px;
+        }
+
+        .tab {
+            display: block;
+            width: 100%;
+        }
+
+        .tab_content {
+            width: 90%;
+            margin: auto;
+            display: none;
+        }
+
+        .img_box {
+            margin: 10px;
+            display: inline-block;
+            background-color: #fff;
+            border-radius: 2px;
+            padding: 8px;
+            box-shadow: 0 0 10px 0;
+        }
+
+        .img_name {
+            display: block;
+            height: 24px;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 3px;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        .img_time {
+            display: block;
+            height: 16px;
+            font-size: 10px;
+            color: #a1a1a1;
+            padding: 2px;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        #gallery img, #galleryAdmin img {
+            display: block;
+            height: 220px;
+            margin: auto;
+        }
+
+        .img_info {
+            display: block;
+            font-size: 14px;
+            color: #555555;
+            padding: 4px;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        .img_actions {
+            display: block;
+            padding: 5px;
+        }
+
+        #photos button {
+            width: 40%;
+            height: 24px;
+            background-color: #243444;
+            font-size: 14px;
+            display: inline;
+            margin: auto 5%;
+            color: #fff;
+            border-style: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px 0;
+        }
+
+        .edit_box {
+            position: fixed;
+            top: 150px;
+            display: block;
+            margin-left: calc(50% - 200px);
+            background-color: #fff;
+            box-shadow: 0 0 20px 2px;
+        }
+
+        .edit_box input {
+            border-style: none;
+            border: none;
+            width: 350px;
+            height: 32px;
+            margin: 30px;
+            display: block;
+            border-bottom: 0.5px solid #000;
+        }
+
+        .edit_box input:focus {
+            outline: none;
+            border-bottom: 1.5px solid #000;
+
+        }
+
+        .edit_box input[type=submit] {
+            border-bottom: 0;
+            background-color: #000;
+            color: #fff;
+        }
+
+        #add_img {
+            border-style: none;
+            border: none;
+            background-color: rgba(0, 0, 0, 0);
+            color: #515151;
+            font-size: 18px;
+            font-weight: 500;
+            position: absolute;
+            right: 20px;
+            top: 70px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        #add_img:hover {
+            background-color: #f1f1f1;
+        }
+
+        #add_img:focus {
+            outline: none;
+        }
+
+        #home {
+            display: block;
+        }
+
+        .contactForm {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+            width: 60%;
+            margin: auto;
+        }
+
+        .contactForm input[type=text], .contactForm input[type=email], .contactForm textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            resize: vertical;
+        }
+
+        .contactForm input[type=submit] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .contactForm input[type=submit]:hover {
+            background-color: #45a049;
+        }
+    </style>
 
 </head>
 <body>
@@ -399,18 +421,19 @@
         <div class="tab_content" id="contact">
             <h1>Contact</h1>
             <div class="contactForm">
-                    <form onsubmit="return checkContactForm(this);">
-                        <label for="name">First Name</label>
-                        <input type="text" id="name" name="name" placeholder="Your name.." required>
+                <form onsubmit="return checkContactForm(this);">
+                    <label for="name">First Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your name.." required>
 
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Email" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email" required>
 
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" placeholder="Write something.." style="height:200px" required></textarea>
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Write something.." style="height:200px"
+                              required></textarea>
 
-                        <input type="submit" value="Submit">
-                    </form>
+                    <input type="submit" value="Submit">
+                </form>
 
             </div>
         </div>

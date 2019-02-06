@@ -7,18 +7,18 @@
     "uploadTime":"22/01/2018 12:06pm"
   },
   {
-  "id":"1",
-  "name":"image 2",
-  "url":"a02.jpg",
-  "info":"Lol",
-  "uploadTime":"22/01/2018 12:06pm"
+    "id": "1",
+    "name": "image 2",
+    "url": "a02.jpg",
+    "info": "Lol",
+    "uploadTime": "22/01/2018 12:06pm"
   },
   {
-  "id":"2",
-  "name":"image 3",
-  "url":"a03.jpg",
-  "info":"Fun",
-  "uploadTime":"22/01/2018 12:06pm"
+    "id": "2",
+    "name": "image 3",
+    "url": "a03.jpg",
+    "info": "Fun",
+    "uploadTime": "22/01/2018 12:06pm"
   },
   {
     "id":"3",
