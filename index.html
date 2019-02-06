@@ -61,11 +61,7 @@
             xhr.open('HEAD', urlToFile, false);
             xhr.send();
 
-            if (xhr.status == "404") {
-                return false;
-            } else {
-                return true;
-            }
+            return xhr.status != "404";
         }
 
         // Adding an image to json object
@@ -307,7 +303,6 @@
 
         .edit_box input {
             border-style: none;
-            border: none;
             width: 350px;
             height: 32px;
             margin: 30px;
@@ -329,7 +324,6 @@
 
         #add_img {
             border-style: none;
-            border: none;
             background-color: rgba(0, 0, 0, 0);
             color: #515151;
             font-size: 18px;
