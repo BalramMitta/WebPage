@@ -15,43 +15,54 @@
             $("#" + tabId).css("display", "block");
         }
 
-        var jsonObject;
-        $.getJSON("images.json", function (json) {
-            jsonObject = json;
-            displayPhotos();
-            displayGalleryPhotos();
-        });
+        var imagesList;
+
+        function loadGalleryJsonObject() {
+            if (localStorage.getItem("gallery") === null) {
+                $.getJSON("images.json", function (json) {
+                    imagesList = json;
+                });
+            } else
+                imagesList = JSON.parse(localStorage.getItem("gallery"));
+        }
+
+        loadGalleryJsonObject();
+
+        window.onload = function () {
+            displayGalleryAdminPhotos();
+        }
 
         function displayGalleryPhotos() {
             var out = "";
-            for (var i in jsonObject) {
+            for (var i in imagesList) {
                 out += '<div class="img_box">';
-                out += '<div class="img_name">' + jsonObject[i].name + '</div>';
-                out += '<div class="img_time">' + jsonObject[i].uploadTime + '</div>';
-                out += '<img src="' + jsonObject[i].url + '"/>';
-                out += '<p class="img_info">' + jsonObject[i].info + '</p>';
+                out += '<div class="img_name">' + imagesList[i].name + '</div>';
+                out += '<div class="img_time">' + imagesList[i].uploadTime + '</div>';
+                out += '<img src="' + imagesList[i].url + '"/>';
+                out += '<p class="img_info">' + imagesList[i].info + '</p>';
                 out += '</div>';
             }
-            console.log(jsonObject);
             document.getElementById("photosG").innerHTML = out;
         }
 
         // To display images from json object
-        function displayPhotos() {
+        function displayGalleryAdminPhotos() {
             var out = "";
-            for (var i in jsonObject) {
+            console.log(imagesList);
+            for (var i in imagesList) {
                 out += '<div class="img_box">';
-                out += '<div class="img_name">' + jsonObject[i].name + '</div>';
-                out += '<div class="img_time">' + jsonObject[i].uploadTime + '</div>';
-                out += '<img src="' + jsonObject[i].url + '" alt="Unable to display image"/>';
-                out += '<p class="img_info">' + jsonObject[i].info + '</p>';
+                out += '<div class="img_name">' + imagesList[i].name + '</div>';
+                out += '<div class="img_time">' + imagesList[i].uploadTime + '</div>';
+                out += '<img src="' + imagesList[i].url + '" alt="Unable to display image"/>';
+                out += '<p class="img_info">' + imagesList[i].info + '</p>';
                 out += '<div class="img_actions" >';
-                out += '<button id="delete_img" onclick=deleteImage("' + jsonObject[i].id + '")>Delete</button>';
-                out += '<button id="edit_img" onclick=displayImageEditForm("' + jsonObject[i].id + '")>Edit</button>';
+                out += '<button id="delete_img" onclick=deleteImage("' + imagesList[i].id + '")>Delete</button>';
+                out += '<button id="edit_img" onclick=displayImageEditForm("' + imagesList[i].id + '")>Edit</button>';
                 out += '</div>';
                 out += '</div>';
             }
-            displayGalleryPhotos()
+            localStorage.setItem("gallery", JSON.stringify(imagesList));
+            displayGalleryPhotos();
             document.getElementById("photos").innerHTML = out;
         }
 
@@ -69,26 +80,26 @@
             var name = document.imgForm.name.value;
             var url = document.imgForm.url.value;
             var info = document.imgForm.info.value;
-            jsonObject.push({
-                "id": jsonObject.length,
+            imagesList.push({
+                "id": imagesList.length,
                 "name": name,
                 "url": url,
                 "info": info,
                 "uploadTime": new Date()
             });
             document.getElementById("form").innerHTML = "";
-            displayPhotos();
+            displayGalleryAdminPhotos();
         }
 
         // Deleting an image from json object
         function deleteImage(id) {
-            for (var i in jsonObject) {
-                if (jsonObject[i].id == id) {
-                    delete jsonObject[i];
+            for (var i in imagesList) {
+                if (imagesList[i].id == id) {
+                    imagesList.splice(i, 1);
                     break;
                 }
             }
-            displayPhotos();
+            displayGalleryAdminPhotos();
         }
 
         // Editing the image details of particular id
@@ -96,17 +107,17 @@
             var name = document.imgForm.name.value;
             var url = document.imgForm.url.value;
             var info = document.imgForm.info.value;
-            for (var i in jsonObject) {
-                if (jsonObject[i].id == id) {
-                    jsonObject[i].name = name;
-                    jsonObject[i].url = url;
-                    jsonObject[i].info = info;
-                    jsonObject[i].uploadTime = new Date();
+            for (var i in imagesList) {
+                if (imagesList[i].id == id) {
+                    imagesList[i].name = name;
+                    imagesList[i].url = url;
+                    imagesList[i].info = info;
+                    imagesList[i].uploadTime = new Date();
                     break;
                 }
             }
             document.getElementById("form").innerHTML = "";
-            displayPhotos();
+            displayGalleryAdminPhotos();
         }
 
         function checkImageFormValidation() {
@@ -129,14 +140,14 @@
 
         //Display image edit form
         function displayImageEditForm(id) {
-            for (var i in jsonObject) {
-                if (jsonObject[i].id == id) {
+            for (var i in imagesList) {
+                if (imagesList[i].id == id) {
                     var imageForm = "";
                     imageForm += '<div class="edit_box" >';
                     imageForm += '<form name="imgForm" action=\"javascript:editImage(\'' + id + '\')\" onsubmit="return checkImageFormValidation()">';
-                    imageForm += '<input type="text" placeholder="Image Url" name="url" value="' + jsonObject[i].url + '"/>';
-                    imageForm += '<input type="text" placeholder="Name" name="name" value="' + jsonObject[i].name + '"/>';
-                    imageForm += '<input type="text" placeholder="Image Info" name="info" value="' + jsonObject[i].info + '"/>';
+                    imageForm += '<input type="text" placeholder="Image Url" name="url" value="' + imagesList[i].url + '"/>';
+                    imageForm += '<input type="text" placeholder="Name" name="name" value="' + imagesList[i].name + '"/>';
+                    imageForm += '<input type="text" placeholder="Image Info" name="info" value="' + imagesList[i].info + '"/>';
                     imageForm += '<input type="submit" value="Submit"/>';
                     imageForm += '</form>';
                     imageForm += '</div>';
