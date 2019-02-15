@@ -4,41 +4,41 @@
     "name":"image 1",
     "url":"a01.jpg",
     "info":"Beach",
-    "uploadTime":"22/01/2018 12:06pm"
+    "uploadTime": "2018-12-29"
   },
   {
     "id": "1",
     "name": "image 2",
     "url": "a02.jpg",
     "info": "Lol",
-    "uploadTime": "22/01/2018 12:06pm"
+    "uploadTime": "2019-02-02"
   },
   {
     "id": "2",
     "name": "image 3",
     "url": "a03.jpg",
     "info": "Fun",
-    "uploadTime": "22/01/2018 12:06pm"
+    "uploadTime": "2019-02-09"
   },
   {
     "id":"3",
     "name":"image 4",
     "url":"a04.jpg",
     "info":"Gang",
-    "uploadTime":"22/01/2018 12:06pm"
+    "uploadTime": "2019-02-10"
   },
   {
     "id":"4",
     "name":"image 5",
     "url":"a05.jpg",
     "info":"Snist",
-    "uploadTime":"22/01/2018 12:06pm"
+    "uploadTime": "2019-01-23"
   },
   {
     "id":"5",
     "name":"image 6",
     "url":"a06.jpg",
     "info":"Zemoso",
-    "uploadTime":"22/01/2018 12:06pm"
+    "uploadTime": "2019-01-22"
   }
 ]

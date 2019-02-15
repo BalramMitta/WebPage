@@ -67,27 +67,20 @@
         }
 
 
-        function doesFileExist(urlToFile) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('HEAD', urlToFile, false);
-            xhr.send();
-
-            return xhr.status != "404";
-        }
-
         // Adding an image to json object
         function addImage() {
             var name = document.imgForm.name.value;
             var url = document.imgForm.url.value;
             var info = document.imgForm.info.value;
+            var date = document.imgForm.date.value;
             imagesList.push({
                 "id": imagesList.length,
                 "name": name,
                 "url": url,
                 "info": info,
-                "uploadTime": new Date()
+                "uploadTime": date
             });
-            document.getElementById("form").innerHTML = "";
+            closeForm();
             displayGalleryAdminPhotos();
         }
 
@@ -107,19 +100,31 @@
             var name = document.imgForm.name.value;
             var url = document.imgForm.url.value;
             var info = document.imgForm.info.value;
+            var date = document.imgForm.date.value;
             for (var i in imagesList) {
                 if (imagesList[i].id == id) {
                     imagesList[i].name = name;
                     imagesList[i].url = url;
                     imagesList[i].info = info;
-                    imagesList[i].uploadTime = new Date();
+                    imagesList[i].uploadTime = date;
                     break;
                 }
             }
-            document.getElementById("form").innerHTML = "";
+            closeForm();
             displayGalleryAdminPhotos();
         }
 
+        function doesFileExist(urlToFile) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', urlToFile, false);
+            xhr.send();
+
+            return xhr.status != "404";
+        }
+
+        function isDateInFuture(date) {
+            return new Date(date).getTime() > new Date().getTime();
+        }
         function checkImageFormValidation() {
             if (!doesFileExist(document.imgForm.url.value)) {
                 alert("Invalid image path");
@@ -132,6 +137,14 @@
             } else if (document.imgForm.info.value == "") {
                 alert("Info cannot be empty");
                 document.imgForm.info.focus();
+                return false;
+            } else if (isDateInFuture(document.imgForm.date.value)) {
+                alert("Future cannot be used");
+                document.imgForm.date.focus();
+                return false;
+            } else if (document.imgForm.date.value == "") {
+                alert("Date cannot be empty");
+                document.imgForm.date.focus();
                 return false;
             } else {
                 return true;
@@ -148,6 +161,7 @@
                     imageForm += '<input type="text" placeholder="Image Url" name="url" value="' + imagesList[i].url + '"/>';
                     imageForm += '<input type="text" placeholder="Name" name="name" value="' + imagesList[i].name + '"/>';
                     imageForm += '<input type="text" placeholder="Image Info" name="info" value="' + imagesList[i].info + '"/>';
+                    imageForm += '<input type="date"  name="date" value="' + imagesList[i].uploadTime + '"/>';
                     imageForm += '<input type="submit" value="Submit"/>';
                     imageForm += '</form>';
                     imageForm += '</div>';
@@ -166,6 +180,7 @@
             imageForm += '<input type="text" placeholder="Image Url" name="url"/>';
             imageForm += '<input type="text" placeholder="Name" name="name"/>';
             imageForm += '<input type="text" placeholder="Image Info" name="info"/>';
+            imageForm += '<input type="date"  name="date" />';
             imageForm += '<input type="submit" value="Add"/>';
             imageForm += '</form>';
             imageForm += '</div>';
@@ -197,11 +212,14 @@
             return true;
         }
 
+        function closeForm() {
+            document.getElementById("form").style.display = "none";
+            document.getElementById("form").innerHTML = "";
+        }
 
         window.onclick = function (event) {
             if (event.target.id == "form") {
-                document.getElementById("form").style.display = "none";
-                document.getElementById("form").innerHTML = "";
+                closeForm();
             }
         }
     </script>
@@ -322,6 +340,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.2);
         }
+
         .edit_box {
             position: fixed;
             top: 150px;
