@@ -18,19 +18,20 @@
         var imagesList;
 
         function loadGalleryJsonObject() {
-            if (localStorage.getItem("gallery") === null) {
+            if ((localStorage.getItem("gallery") === null)) {
                 $.getJSON("images.json", function (json) {
                     imagesList = json;
+                    displayGalleryAdminPhotos();
                 });
-            } else
+            } else {
                 imagesList = JSON.parse(localStorage.getItem("gallery"));
+                displayGalleryAdminPhotos();
+            }
         }
-
-        loadGalleryJsonObject();
 
         window.onload = function () {
-            displayGalleryAdminPhotos();
-        }
+            loadGalleryJsonObject();
+        };
 
         function displayGalleryPhotos() {
             var out = "";
@@ -48,7 +49,6 @@
         // To display images from json object
         function displayGalleryAdminPhotos() {
             var out = "";
-            console.log(imagesList);
             for (var i in imagesList) {
                 out += '<div class="img_box">';
                 out += '<div class="img_name">' + imagesList[i].name + '</div>';
